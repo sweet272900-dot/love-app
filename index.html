@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>For Honeey ❤️</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
+body{background:#000;color:#fff;overflow:hidden}
+
+/* SCREEN SYSTEM */
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+.screen.active{display:flex}
+
+/* UI */
+button,input,video{position:relative;z-index:10}
+
+button{
+  padding:16px 42px;
+  border:none;
+  border-radius:40px;
+  font-size:18px;
+  font-weight:700;
+  background:linear-gradient(145deg,#fff,#dcdcdc);
+  box-shadow:0 12px 28px rgba(0,0,0,.6);
+}
+button:active{transform:translateY(3px)}
+
+input{
+  width:80%;
+  padding:16px;
+  font-size:18px;
+  border-radius:18px;
+  border:none;
+  text-align:center;
+  background:rgba(255,255,255,.15);
+  color:#fff;
+  margin-bottom:18px;
+}
+
+/* BACKGROUND */
+.neon{
+  background:
+    radial-gradient(circle at top,#7a00ff 0%,#22003f 40%,#000 70%),
+    radial-gradient(circle at bottom,#ff2f92 0%,transparent 60%);
+}
+
+/* TEXT */
+.title{
+  font-size:26px;
+  margin-bottom:20px;
+  text-shadow:0 0 20px #ff2f92;
+}
+.emoji{
+  font-size:72px;
+  margin-bottom:16px;
+  animation:float 2s infinite;
+}
+@keyframes float{
+  50%{transform:translateY(-12px)}
+}
+.error{color:#ff4d4d;font-weight:600;margin-top:8px}
+
+/* COUNTDOWN */
+.count{
+  font-size:72px;
+  font-weight:800;
+  text-shadow:0 0 30px #fff;
+}
+
+/* FIREWORKS */
+canvas{position:absolute;inset:0;z-index:1}
+
+/* VIDEO */
+video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:black;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="screen active neon">
+  <h1 style="font-size:42px;text-shadow:0 0 30px #ff2f92">❤️ HONEY ❤️</h1>
+  <p style="margin-top:18px;letter-spacing:5px">WELCOME</p>
+</div>
+
+<!-- INTRO -->
+<div id="intro" class="screen neon">
+  <div class="emoji">👋</div>
+  <div class="title">Hii….. Honeey</div>
+  <button onclick="show('login')">START</button>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="screen neon">
+  <div class="title">LOGIN</div>
+  <input id="uid" placeholder="ABCDEFGH">
+  <input id="pwd" placeholder="PASSWORD">
+  <button onclick="checkLogin()">LOGIN</button>
+  <div id="loginErr" class="error"></div>
+</div>
+
+<!-- DATE -->
+<div id="date" class="screen neon">
+  <div class="emoji" id="dateEmoji">😎</div>
+  <div class="title">ENTER OUR ANNIVERSARY DATE</div>
+  <input id="dateInput" placeholder="DDMMYYYY">
+  <button onclick="checkDate()">VERIFY</button>
+  <div id="dateErr" class="error"></div>
+</div>
+
+<!-- NICKNAME -->
+<div id="nick" class="screen neon">
+  <div class="emoji" id="nickEmoji">🥰</div>
+  <div class="title">ENTER MY FAV LOVE NICKNAME</div>
+  <input id="nickInput" placeholder="ABCDEFGH">
+  <button onclick="checkNick()">CONFIRM</button>
+  <div id="nickErr" class="error"></div>
+</div>
+
+<!-- COUNTDOWN -->
+<div id="count" class="screen neon">
+  <div class="count" id="countNum">60</div>
+</div>
+
+<!-- FIREWORKS -->
+<div id="fire" class="screen">
+  <canvas id="fw"></canvas>
+  <h1 style="z-index:10;text-shadow:0 0 25px #ff2f92">
+    HAPPY NEW YEAR<br>MY LOVE ❤️
+  </h1>
+  <br>
+  <button onclick="show('video')">NEXT</button>
+</div>
+
+<!-- VIDEO -->
+<div id="video" class="screen">
+  <video
+    id="vid"
+    src="lv_0_20251228215859.mp4"
+    controls
+    playsinline
+    muted
+    preload="auto">
+  </video>
+
+  <button
+    id="playBtn"
+    onclick="playVideo()"
+    style="position:absolute;bottom:40px;">
+    ▶ PLAY
+  </button>
+</div>
+
+<script>
+const show=id=>{
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+};
+
+setTimeout(()=>show('intro'),5000);
+
+/* LOGIN */
+function checkLogin(){
+  if(uid.value==="HONEY" && pwd.value==="SONA"){
+    show('date');
+  } else loginErr.textContent="Wrong Password";
+}
+
+/* DATE */
+function checkDate(){
+  if(dateInput.value==="01122025"){
+    show('nick');
+  } else {
+    dateEmoji.textContent="😢";
+    dateErr.textContent="Wrong Password";
+  }
+}
+
+/* NICKNAME */
+function checkNick(){
+  if(nickInput.value.toUpperCase()==="SHREE"){
+    startCount();
+  } else {
+    nickEmoji.textContent="😢";
+    nickErr.textContent="Wrong Password";
+  }
+}
+
+/* COUNTDOWN */
+let c=60,t;
+function startCount(){
+  show('count');
+  t=setInterval(()=>{
+    countNum.textContent=c;
+    if(c<=10) countNum.style.color="red";
+    if(c--<=0){
+      clearInterval(t);
+      show('fire');
+      startFireworks();
+    }
+  },1000);
+}
+
+/* FIREWORKS */
+const canvas=document.getElementById("fw");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let p=[];
+function burst(){
+  let x=Math.random()*canvas.width;
+  let y=Math.random()*canvas.height/2;
+  for(let i=0;i<160;i++){
+    p.push({x,y,vx:(Math.random()-.5)*7,vy:(Math.random()-.5)*7,life:60});
+  }
+}
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  p.forEach(e=>{
+    ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+    ctx.fillRect(e.x,e.y,3,3);
+    e.x+=e.vx;e.y+=e.vy;e.life--;
+  });
+  p=p.filter(e=>e.life>0);
+  requestAnimationFrame(animate);
+}
+function startFireworks(){
+  setInterval(burst,800);
+  animate();
+}
+
+/* VIDEO PLAY (SAFE MODE) */
+function playVideo(){
+  const v=document.getElementById("vid");
+  const btn=document.getElementById("playBtn");
+
+  v.muted=true;
+  const p=v.play();
+  if(p!==undefined){
+    p.then(()=>{
+      v.muted=false;
+      btn.style.display="none";
+      if(v.requestFullscreen) v.requestFullscreen();
+      else if(v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+    });
+  }
+}
+</script>
+
+</body>
+</html>
